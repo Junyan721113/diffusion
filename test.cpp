@@ -32,10 +32,17 @@ int main() {
     
     imshow("diffusion", MStart);
     setMouseCallback("diffusion", onMouse, reinterpret_cast<void*>(&Mdiff));
+    VideoWriter writer = VideoWriter("res.avi", VideoWriter::fourcc('X', 'V', 'I', 'D'), 30, MStart.size());
+    int cnt = 0;
     while(waitKey(1) != 'q') {
         filter2D(Mdiff, Mdiff, -1, kernel);
         Mdiff.convertTo(MStart, CV_8UC3);
         imshow("diffusion", MStart);
+        if(++cnt % 1 == 0) {
+            cout << "Frame " << cnt << endl;
+            writer << MStart;
+        }
     }
+    writer.release();
     return 0;
 }
