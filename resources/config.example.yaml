@@ -1,0 +1,11 @@
+L: 1.0 # meter / pixel
+T: 1.0 # second / frame
+
+real_alpha: 0.5 # meter^2 / second
+real_vx: 0.1    # meter / second
+real_vy: 0.2    # meter / second
+
+limit: 10000.0
+doLog: true
+
+startImage: ./resources/test.png
