@@ -1,4 +1,13 @@
-# iGEM Diffusion Modeling
+# iGEM Diffusion Simulator
+
+## Usage
+
+Make sure you have python 3.10 or higher version
+
+```shell
+pip install -r requirements.txt
+python main.py
+```
 
 ## Principles
 
@@ -80,5 +89,5 @@ p(0) = 0, p(1) = 1
 $$
 
 $$
-p(x) = \ln(x * (exp - 1) + 1)
+p(x) = \ln((e - 1)x + 1)
 $$
