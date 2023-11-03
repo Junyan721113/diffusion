@@ -44,7 +44,7 @@ class PushSettingCardStr(SettingCard):
 
 
 class TasksInterface(ScrollArea):
-    """ Home interface """
+    """ Tasks interface """
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)

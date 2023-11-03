@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 
 class imageProc:
-
     def __init__(self,
                  name,
                  startImage=None,
