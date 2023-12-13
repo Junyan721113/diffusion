@@ -199,3 +199,7 @@ $$
 #### [类图]
 
 ![类图](diffusion.svg)
+
+#### [时序图]
+
+![时序图](Simulation.svg)
