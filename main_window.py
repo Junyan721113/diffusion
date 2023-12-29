@@ -33,10 +33,10 @@ class MainWindow(MSFluentWindow):
         self.addSubInterface(self.homeInterface, FIF.HOME, self.tr('主页'))
         self.addSubInterface(self.tasksInterface, FIF.LABEL, self.tr('模拟'))
 
-        self.navigationInterface.addWidget(
-            'themeButton',
-            NavigationBarPushButton(FIF.BRUSH, '主题', isSelectable=False),
-            self.toggleTheme, NavigationItemPosition.BOTTOM)
+        # self.navigationInterface.addWidget(
+        #     'themeButton',
+        #     NavigationBarPushButton(FIF.BRUSH, '主题', isSelectable=False),
+        #     self.toggleTheme, NavigationItemPosition.BOTTOM)
 
         self.addSubInterface(self.settingInterface,
                              FIF.SETTING,

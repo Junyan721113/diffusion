@@ -6,6 +6,10 @@ real_vx: 0.1    # meter / second
 real_vy: 0.2    # meter / second
 
 limit: 10000.0
+K: 1e-06
+
 doLog: true
+p2drate: 2
+p3drate: 5
 
 startImage: ./resources/test.png
