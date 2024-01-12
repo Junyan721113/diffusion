@@ -122,9 +122,9 @@ $$
 
 4. 通过适当的方法将模拟的结果导出
 
-    4.1 对整个扩散过程的视频记录
-    
-    4.2 选取特定的位置导出表格
+    4.1 截取扩散过程的某一瞬间导出
+
+    4.2 将对应位置的图表导出
 
 #### [抽象拆分]
 
@@ -178,28 +178,126 @@ $$
 
     属性：矩阵的值
 
-8. [颜色回显类]
+8. [颜色回显类] showRender
 
     方法：鼠标事件处理
 
     属性：渲染矩阵、图表、画笔
 
-9. [图表类]
+9. [图表类] plotManager
 
     方法：渲染图表、导出图表
 
     属性：坐标轴、散点数据
 
-10. [画笔类]
+10. [画笔类] showPaint
 
     方法：在指定矩阵上绘制
 
     属性：控制按钮、画笔参数配置
 
-#### [类图]
+### [类图]
 
 ![类图](diffusion.svg)
 
-#### [时序图]
+### [时序图]
 
 ![时序图](Simulation.svg)
+
+### 设计模式
+
+#### 观察者模式
+
+图表类 plot2D plot3D 继承自 plotObserver
+
+```python
+class plot2D(plotObserver):
+class plot3D(plotObserver):
+```
+
+它们被实例化时，会插入到 showRender 的 observers 列表中
+
+```python
+class showRender:
+    observers = []
+    def attachObserver(self, observer: plotObserver):
+        self.observers.append(observer)
+
+class plot2D(plotObserver):
+    def __init__(self, rdr: showRender, fig, grid, gidx, rate):
+        # ...
+        rdr.attachObserver(self)
+```
+
+当 showRender 产生一次更新时，会触发列表中所有类的 updatePlot() 方法
+
+```python
+class showRender:
+    def renderFrame(self):
+        # ...
+        for observer in self.observers:
+            observer.updatePlot()
+```
+
+#### 工厂模式 & 建造者模式
+
+图表工厂类 plotManager 提供图表界面的创建、排版与布局
+它通过 createPlot() 方法的参数，来决定工厂生产 plot2D 还是 plot3D
+同时也提供两种默认的排布，即 2D | 3D 和 3D | 2D，以建造出整个图表界面
+
+```python
+class plotManager:
+    def createPlot(self, type):
+        if self.gidx >= self.gwidth:
+            return None
+        if type == 0:
+            plot = plot2D(self.rdr, self.fig, self.grid, self.gidx, self.p2drate)
+        else:
+            plot = plot3D(self.rdr, self.fig, self.grid, self.gidx, self.p3drate)
+        self.gidx += 1
+        self.plots.append(plot)
+        return plot
+
+    def createDefaultPlot(self):
+        self.createPlot(0)
+        self.createPlot(1)
+
+    def createDefaultPlotReverse(self):
+        self.createPlot(1)
+        self.createPlot(0)
+```
+
+### 函数闭包
+
+#### 批量生成按钮事件函数
+
+配置界面的按钮事件函数，重复度极高，可以利用函数闭包批量生成
+
+先批量生成类型转换函数
+
+```python
+    def __convertGenerator(self, type):
+        def __convert(value):
+            if type == "bool":
+                return value == "True"
+            elif type == "int":
+                return int(value)
+            elif type == "float":
+                return float(value)
+            else:
+                return value
+        return __convert
+```
+
+再根据类型批量生成按钮事件函数
+
+```python
+    def __onCardClickedGenerator(self, card: PushSettingCard, configname: str, type: str = "float"):
+        # ...
+        ledit.setText(str(config.get_value(configname)))
+        def __onCardClicked():
+            if ledit.text():
+                config.set_value(configname, self.__convertGenerator(type)(ledit.text()))
+                ledit.setText(str(config.get_value(configname)))
+        return __onCardClicked
+```
